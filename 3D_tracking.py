@@ -1,4 +1,4 @@
-# This code is meant to plot the 3D coordinates of a ping pong ball using 2 Cameras
+# This code is meant to plot the 3D coordinates of a ping pong ball using 2 Cameras 
 import mvsdk
 import numpy as np
 import cv2
