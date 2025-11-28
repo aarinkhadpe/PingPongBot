@@ -1,11 +1,16 @@
 # this code is a simple way to get the corners and middle edges of the table for 2D vision (ONE CAMERA)
-import mvsdk
 import ctypes
 import cv2
 import numpy as np
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+import mvsdk
 
 # load distortion calibration parameters
-with np.load("camera_calibration.npz") as X:
+with np.load("2D_tracking/dist_calibration.npz") as X:
     cameraMatrix, distCoeffs = [X[i] for i in ('cameraMatrix', 'distCoeffs')]
 
 # detect camera

@@ -1,20 +1,23 @@
 # This code is meant to track a ping pong ball in 2D (x and y)
 # using a single camera
-
-import mvsdk
+import sys
+import os
 import numpy as np
 import cv2
 import ctypes
 import matplotlib.pyplot as plt
 import time
 from collections import deque
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+import mvsdk
 
 # import the calibration data
-with np.load("dist_calibration.npz") as X:
+with np.load("2D_tracking/dist_calibration.npz") as X:
     cameraMatrix, distCoeffs = [X[i] for i in ('cameraMatrix', 'distCoeffs')]
 
 # import scaled table points for masking things outside the table (uses corners and middle edges)
-data = np.load("table_click_points_scaled.npz")
+data = np.load("2D_tracking/table_click_points_scaled.npz")
 table_points = data["pixel_points"]  # they are pre-scaled
 
 
