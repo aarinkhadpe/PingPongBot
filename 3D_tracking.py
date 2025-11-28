@@ -6,6 +6,8 @@ import ctypes
 import time
 from collections import deque
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
 
 # contour tracking settings
 RESIZE_W, RESIZE_H = 640, 480
@@ -147,6 +149,10 @@ finally:
     mvsdk.CameraAlignFree(bufRight)
     cv2.destroyAllWindows()
 
+# Load table points
+table_data = np.load("table_points.npz")
+table_points = table_data['pixel_points']  # This should be shape (8, 3)
+
 # break apart the raw ball coordinates into groups of SHOT coorinates
 # the way this works is by checking if the next x-value of the ball shows a different trend than
 # the previous ones, then it is a new shot. LOGIC: if the current x-value is greater than the previous, 
@@ -166,19 +172,25 @@ if len(ball_positions) > 1:
     if pointStart < len(ball_positions):
         shot.append(ball_positions[pointStart:])
 
-# plot the 3D points (connected with lines, NOT a regression) in different colors for each shot
+# plot the 3D points and the table
 fig = plt.figure("3D Ball Trajectory by Shot")
 ax = fig.add_subplot(111, projection='3d')
 
+# ---- Fill the table polygon ----
+table_poly = Poly3DCollection([table_points], facecolor='lightblue', alpha=0.5, edgecolor='k')
+ax.add_collection3d(table_poly)
+
+# ---- Plot ball shots ----
 colors = plt.cm.tab10(np.linspace(0, 1, len(shot)))
 for i, s in enumerate(shot):
     ax.plot(s[:,0], s[:,1], s[:,2], color=colors[i], marker='o', markersize=3, label=f"Shot {i+1}")
 
+# ---- Axes settings ----
 ax.set_xlabel("X (mm)")
 ax.set_ylabel("Y (mm)")
 ax.set_zlabel("Z (mm)")
-ax.set_xlim(-400,400)
-ax.set_ylim(-400,400)
+ax.set_xlim(-800,800)
+ax.set_ylim(-800,800)
 ax.set_zlim(0,1500)
 ax.invert_zaxis()
 ax.legend()
